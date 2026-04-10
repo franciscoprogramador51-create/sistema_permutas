@@ -13,9 +13,9 @@ const sequelize = new Sequelize('postgresql://banco_permutas_user:UoCpTltjQTf34z
 
 const Permuta = sequelize.define('Permuta', {
   solicitanteNome: { type: DataTypes.STRING },
-  solicitanteMatricula: { type: DataTypes.STRING },
+  solicitanteMatricula: { type: DataTypes.STRING }, // Matrícula aqui
   substitutoNome: { type: DataTypes.STRING },
-  substitutoMatricula: { type: DataTypes.STRING },
+  substitutoMatricula: { type: DataTypes.STRING }, // Matrícula aqui
   dataServico: { type: DataTypes.DATEONLY, allowNull: false },
   status: { type: DataTypes.STRING, defaultValue: 'PENDENTE' }
 });

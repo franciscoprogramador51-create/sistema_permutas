@@ -3,70 +3,76 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Sistema de Permuta Militar</title>
+    <title>CBMCE - Solicitação de Permuta</title>
     <style>
-        body { font-family: sans-serif; background: #f4f4f4; padding: 15px; }
-        .card { background: white; padding: 20px; border-radius: 10px; box-shadow: 0 4px 10px rgba(0,0,0,0.1); }
-        h2 { text-align: center; color: #1b5e20; border-bottom: 2px solid #1b5e20; padding-bottom: 10px; }
-        label { font-weight: bold; display: block; margin-top: 15px; }
+        body { font-family: 'Segoe UI', sans-serif; background: #f4f4f4; padding: 15px; margin: 0; }
+        .topo { background: #c0392b; color: #f1c40f; padding: 20px; text-align: center; border-bottom: 4px solid #f1c40f; }
+        .card { background: white; padding: 20px; margin-top: 10px; border-radius: 8px; box-shadow: 0 4px 10px rgba(0,0,0,0.1); }
+        label { font-weight: bold; display: block; margin-top: 15px; color: #2c3e50; }
         input { width: 100%; padding: 12px; margin-top: 5px; border: 1px solid #ccc; border-radius: 5px; box-sizing: border-box; font-size: 16px; }
-        
-        /* Botão de Enviar (Verde) */
-        .btn-enviar { width: 100%; background: #1b5e20; color: white; border: none; padding: 15px; margin-top: 20px; border-radius: 5px; cursor: pointer; font-size: 16px; font-weight: bold; }
-        
-        /* Botão de Consultar (Cinza) */
-        .btn-consultar { width: 100%; background: #555; color: white; border: none; padding: 15px; margin-top: 10px; border-radius: 5px; cursor: pointer; font-size: 16px; }
+        .btn-enviar { width: 100%; background: #c0392b; color: white; border: none; padding: 15px; margin-top: 25px; border-radius: 5px; cursor: pointer; font-weight: bold; font-size: 16px; }
+        .btn-status { width: 100%; background: #7f8c8d; color: white; border: none; padding: 12px; margin-top: 10px; border-radius: 5px; cursor: pointer; }
+        footer { margin-top: 40px; text-align: center; }
+        footer a { color: #aaa; text-decoration: none; font-size: 12px; }
     </style>
 </head>
 <body>
+    <div class="topo">
+        <h2 style="margin:0;">🔥 CBMCE</h2>
+        <small>SOLICITAÇÃO DE PERMUTA</small>
+    </div>
 
-<div class="card">
-    <h2>Solicitar Permuta</h2>
-    
-    <label>Nome do Solicitante:</label>
-    <input type="text" id="solicitanteNome" placeholder="Ex: Sgt Silveira">
-    
-    <label>Nome do Substituto:</label>
-    <input type="text" id="substitutoNome" placeholder="Ex: ST Matias">
-    
-    <label>Data do Serviço:</label>
-    <input type="date" id="data">
+    <div class="card">
+        <label>NOME DO SOLICITANTE:</label>
+        <input type="text" id="solicitanteNome" placeholder="Ex: Sgt Elias">
+        <label>MATRÍCULA DO SOLICITANTE:</label>
+        <input type="text" id="solicitanteMat" placeholder="Ex: 123.456-1-X">
 
-    <button class="btn-enviar" onclick="enviar()">ENVIAR PARA O COMANDANTE</button>
-    
-    <button class="btn-consultar" onclick="window.location.href='/status.html'">VER RESULTADO (CARIMBOS)</button>
-</div>
+        <hr style="margin-top:20px; opacity: 0.2;">
 
-<script>
-    async function enviar() {
-        const dados = {
-            solicitanteNome: document.getElementById('solicitanteNome').value,
-            solicitanteMatricula: "000.000", // Simplificado
-            substitutoNome: document.getElementById('substitutoNome').value,
-            substitutoMatricula: "000.000", // Simplificado
-            dataServico: document.getElementById('data').value
-        };
+        <label>NOME DO SUBSTITUTO:</label>
+        <input type="text" id="substitutoNome" placeholder="Ex: Sgt Silva">
+        <label>MATRÍCULA DO SUBSTITUTO:</label>
+        <input type="text" id="substitutoMat" placeholder="Ex: 987.654-1-Y">
 
-        if(!dados.dataServico || !dados.solicitanteNome) {
-            alert("Preencha os nomes e a data!");
-            return;
+        <label>DATA DO SERVIÇO:</label>
+        <input type="date" id="data">
+
+        <button class="btn-enviar" onclick="enviar()">ENVIAR PARA DESPACHO</button>
+        <button class="btn-status" onclick="window.location.href='/status.html'">ACOMPANHAR STATUS</button>
+    </div>
+
+    <footer>
+        <a href="/admin.html">Acesso Restrito - Comandante</a>
+    </footer>
+
+    <script>
+        async function enviar() {
+            const dados = {
+                solicitanteNome: document.getElementById('solicitanteNome').value,
+                solicitanteMatricula: document.getElementById('solicitanteMat').value,
+                substitutoNome: document.getElementById('substitutoNome').value,
+                substitutoMatricula: document.getElementById('substitutoMat').value,
+                dataServico: document.getElementById('data').value
+            };
+
+            if(!dados.dataServico || !dados.solicitanteNome || !dados.solicitanteMat) {
+                alert("Preencha todos os campos corretamente!");
+                return;
+            }
+
+            const res = await fetch('/permutas', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(dados)
+            });
+
+            if (res.ok) {
+                window.location.href = "/status.html";
+            } else {
+                alert("Erro ao enviar. Verifique sua conexão.");
+            }
         }
-
-        const res = await fetch('/permutas', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(dados)
-        });
-
-        if (res.ok) {
-            alert('Enviado com sucesso! Abrindo tela de acompanhamento...');
-            // ISSO AQUI LEVA O MILITAR DIRETO PARA ONDE ESTÁ O CARIMBO:
-            window.location.href = "/status.html";
-        } else {
-            alert('Erro ao enviar.');
-        }
-    }
-</script>
-
+    </script>
 </body>
 </html>
