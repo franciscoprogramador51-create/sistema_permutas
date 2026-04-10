@@ -1,24 +1,20 @@
 const { Sequelize, DataTypes } = require('sequelize');
 
-const sequelize = new Sequelize('postgresql://banco_permutas_user:UoCpTltjQTf34zq3tS13gmIyh5Mc97yX@dpg-d7ckh8ho3t8c73d5qftg-a.ohio-postgres.render.com/banco_permutas', {
+const sequelize = new Sequelize(process.env.DATABASE_URL, {
   dialect: 'postgres',
-  dialectOptions: {
-    ssl: {
-      require: true,
-      rejectUnauthorized: false
-    }
-  },
+  dialectOptions: { ssl: { require: true, rejectUnauthorized: false } },
   logging: false
 });
 
 const Permuta = sequelize.define('Permuta', {
   solicitanteNome: { type: DataTypes.STRING },
-  solicitanteMatricula: { type: DataTypes.STRING }, // Matrícula aqui
+  solicitanteMatricula: { type: DataTypes.STRING },
   substitutoNome: { type: DataTypes.STRING },
-  substitutoMatricula: { type: DataTypes.STRING }, // Matrícula aqui
-  dataServico: { type: DataTypes.DATEONLY, allowNull: false },
+  substitutoMatricula: { type: DataTypes.STRING },
+  dataServico: { type: DataTypes.DATEONLY },
+  tipoPermuta: { type: DataTypes.STRING }, // Campo de 12h ou 24h
   status: { type: DataTypes.STRING, defaultValue: 'PENDENTE' }
 });
 
-sequelize.sync();
+sequelize.sync({ alter: true }); // O 'alter' força o banco a criar as colunas novas
 module.exports = { Permuta };
