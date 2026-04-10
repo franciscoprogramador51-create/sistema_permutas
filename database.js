@@ -1,7 +1,6 @@
 const { Sequelize, DataTypes } = require('sequelize');
 
-// Conexão exclusiva para PostgreSQL (Nuvem)
-const sequelize = new Sequelize(process.env.DATABASE_URL, {
+const sequelize = new Sequelize('postgresql://banco_permutas_user:UoCpTltjQTf34zq3tS13gmIyh5Mc97yX@dpg-d7ckh8ho3t8c73d5qftg-a.ohio-postgres.render.com/banco_permutas', {
   dialect: 'postgres',
   dialectOptions: {
     ssl: {
